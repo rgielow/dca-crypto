@@ -1,0 +1,14 @@
+package com.cryptofolio.domain.repository
+
+import com.cryptofolio.domain.model.Transaction
+import kotlinx.coroutines.flow.Flow
+
+interface TransactionRepository {
+    fun getAllTransactions(): Flow<List<Transaction>>
+    fun getTransactionsByCoinId(coinId: String): Flow<List<Transaction>>
+    suspend fun getTransactionById(id: Long): Transaction?
+    suspend fun insertTransaction(transaction: Transaction)
+    suspend fun updateTransaction(transaction: Transaction)
+    suspend fun deleteTransaction(id: Long)
+    suspend fun deleteAllTransactions()
+}
