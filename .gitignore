@@ -9,6 +9,8 @@
 /captures
 .externalNativeBuild
 .cxx
+local.properties
+gradle/gradle-daemon-jvm.properties
 *.xcodeproj/project.xcworkspace/
 *.xcodeproj/xcuserdata/
 *.xcworkspace/xcuserdata/
