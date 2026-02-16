@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 @Composable
-fun CryptoFolioTextField(
+fun AppTextField(
     value: String,
     onValueChange: (String) -> Unit,
     label: String,
@@ -19,6 +19,7 @@ fun CryptoFolioTextField(
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     singleLine: Boolean = true,
 ) {
+
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
