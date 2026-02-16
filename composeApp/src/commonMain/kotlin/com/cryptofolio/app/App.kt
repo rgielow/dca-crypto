@@ -14,14 +14,14 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.cryptofolio.app.navigation.CryptoFolioNavHost
 import com.cryptofolio.core.designsystem.icon.CryptoFolioIcons
-import com.cryptofolio.core.designsystem.theme.CryptoFolioTheme
+import com.cryptofolio.core.designsystem.theme.AppTheme
 import com.cryptofolio.feature.portfolio.navigation.PortfolioRoute
 import com.cryptofolio.feature.settings.navigation.SettingsRoute
 import com.cryptofolio.feature.transaction.navigation.TransactionListRoute
 
 @Composable
 fun App() {
-    CryptoFolioTheme {
+    AppTheme {
         val navController = rememberNavController()
         val currentBackStackEntry by navController.currentBackStackEntryAsState()
         val currentDestination = currentBackStackEntry?.destination

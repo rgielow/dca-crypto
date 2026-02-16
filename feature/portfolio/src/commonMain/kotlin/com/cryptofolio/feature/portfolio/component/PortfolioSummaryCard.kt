@@ -10,7 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.cryptofolio.core.designsystem.component.CryptoFolioCard
+import com.cryptofolio.core.designsystem.component.AppCard
 import com.cryptofolio.core.designsystem.component.PriceChangeIndicator
 import com.cryptofolio.core.ui.CurrencyFormatter
 import com.cryptofolio.domain.model.Portfolio
@@ -20,7 +20,7 @@ fun PortfolioSummaryCard(
     portfolio: Portfolio,
     modifier: Modifier = Modifier,
 ) {
-    CryptoFolioCard(modifier = modifier) {
+    AppCard(modifier = modifier) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
                 text = "Total Value",

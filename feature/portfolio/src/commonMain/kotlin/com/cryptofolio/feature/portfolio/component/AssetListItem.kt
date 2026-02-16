@@ -11,7 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.cryptofolio.core.designsystem.component.CryptoFolioCard
+import com.cryptofolio.core.designsystem.component.AppCard
 import com.cryptofolio.core.designsystem.component.PriceChangeIndicator
 import com.cryptofolio.core.ui.CurrencyFormatter
 import com.cryptofolio.domain.model.Asset
@@ -22,7 +22,7 @@ fun AssetListItem(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    CryptoFolioCard(onClick = onClick, modifier = modifier) {
+    AppCard(onClick = onClick, modifier = modifier) {
         Row(
             modifier = Modifier.fillMaxWidth().padding(16.dp),
             horizontalArrangement = Arrangement.SpaceBetween,

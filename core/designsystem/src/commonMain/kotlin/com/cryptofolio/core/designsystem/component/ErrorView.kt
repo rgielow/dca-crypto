@@ -2,9 +2,7 @@ package com.cryptofolio.core.designsystem.component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -12,7 +10,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
+import com.cryptofolio.core.designsystem.theme.Spacing
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun ErrorView(
@@ -23,7 +22,7 @@ fun ErrorView(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(24.dp),
+            .padding(all = Spacing.lg),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
@@ -34,11 +33,22 @@ fun ErrorView(
             textAlign = TextAlign.Center,
         )
         if (onRetry != null) {
-            Spacer(modifier = Modifier.height(16.dp))
-            CryptoFolioButton(
+            VerticalSpacer()
+            AppButton(
                 text = "Retry",
                 onClick = onRetry,
             )
         }
+    }
+}
+
+@Preview
+@Composable
+private fun ErrorViewPreview() {
+    AppPreview {
+        ErrorView(
+            message = "Something went wrong",
+            onRetry = {},
+        )
     }
 }

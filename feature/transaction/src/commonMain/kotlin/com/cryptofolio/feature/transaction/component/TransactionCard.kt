@@ -13,9 +13,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.cryptofolio.core.designsystem.component.CryptoFolioCard
+import com.cryptofolio.core.designsystem.component.AppCard
 import com.cryptofolio.core.designsystem.icon.CryptoFolioIcons
-import com.cryptofolio.core.designsystem.theme.CryptoFolioTheme
+import com.cryptofolio.core.designsystem.theme.ExtendedTheme
 import com.cryptofolio.core.ui.CurrencyFormatter
 import com.cryptofolio.core.ui.DateFormatter
 import com.cryptofolio.domain.model.Transaction
@@ -29,12 +29,12 @@ fun TransactionCard(
     modifier: Modifier = Modifier,
 ) {
     val typeColor = if (transaction.type == TransactionType.BUY) {
-        CryptoFolioTheme.extendedColors.positive
+        ExtendedTheme.extendedColors.positive
     } else {
-        CryptoFolioTheme.extendedColors.negative
+        ExtendedTheme.extendedColors.negative
     }
 
-    CryptoFolioCard(onClick = onClick, modifier = modifier) {
+    AppCard(onClick = onClick, modifier = modifier) {
         Row(
             modifier = Modifier.fillMaxWidth().padding(16.dp),
             horizontalArrangement = Arrangement.SpaceBetween,

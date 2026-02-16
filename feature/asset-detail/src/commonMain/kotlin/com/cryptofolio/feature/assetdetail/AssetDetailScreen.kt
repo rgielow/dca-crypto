@@ -21,7 +21,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.cryptofolio.core.designsystem.component.CryptoFolioCard
+import com.cryptofolio.core.designsystem.component.AppCard
 import com.cryptofolio.core.designsystem.component.ErrorView
 import com.cryptofolio.core.designsystem.component.LoadingIndicator
 import com.cryptofolio.core.designsystem.component.PriceChangeIndicator
@@ -71,7 +71,7 @@ fun AssetDetailScreen(
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     item {
-                        CryptoFolioCard {
+                        AppCard {
                             Column(modifier = Modifier.padding(16.dp)) {
                                 Text(
                                     text = "${asset.coinName} (${asset.coinSymbol.uppercase()})",
@@ -139,7 +139,7 @@ private fun DetailItem(label: String, value: String) {
 
 @Composable
 private fun TransactionHistoryItem(transaction: Transaction, onClick: () -> Unit) {
-    CryptoFolioCard(onClick = onClick) {
+    AppCard(onClick = onClick) {
         Row(
             modifier = Modifier.fillMaxWidth().padding(12.dp),
             horizontalArrangement = Arrangement.SpaceBetween,

@@ -23,7 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.cryptofolio.core.designsystem.component.CryptoFolioButton
+import com.cryptofolio.core.designsystem.component.AppButton
 import com.cryptofolio.core.designsystem.component.CryptoFolioTextField
 import com.cryptofolio.core.designsystem.icon.CryptoFolioIcons
 import com.cryptofolio.core.ui.CollectAsEffect
@@ -145,7 +145,7 @@ fun AddTransactionScreen(
 
             Spacer(Modifier.height(8.dp))
 
-            CryptoFolioButton(
+            AppButton(
                 text = "Save Transaction",
                 onClick = { viewModel.onAction(AddTransactionAction.Save) },
                 enabled = !state.isLoading,

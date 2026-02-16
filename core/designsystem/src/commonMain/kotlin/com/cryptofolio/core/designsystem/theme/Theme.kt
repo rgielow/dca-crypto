@@ -59,7 +59,7 @@ private val DarkColorScheme = darkColorScheme(
 )
 
 @Composable
-fun CryptoFolioTheme(
+fun AppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit,
 ) {
@@ -73,14 +73,14 @@ fun CryptoFolioTheme(
     CompositionLocalProvider(LocalExtendedColors provides extendedColors) {
         MaterialTheme(
             colorScheme = colorScheme,
-            typography = CryptoFolioTypography(),
-            shapes = CryptoFolioShapes,
+            typography = appTypography(),
+            shapes = AppShapes,
             content = content,
         )
     }
 }
 
-object CryptoFolioTheme {
+object ExtendedTheme {
     val extendedColors: ExtendedColors
         @Composable get() = LocalExtendedColors.current
 }

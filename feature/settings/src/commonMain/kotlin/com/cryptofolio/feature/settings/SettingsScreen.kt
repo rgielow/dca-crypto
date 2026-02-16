@@ -20,7 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.cryptofolio.core.designsystem.component.CryptoFolioCard
+import com.cryptofolio.core.designsystem.component.AppCard
 import com.cryptofolio.domain.model.Currency
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -43,7 +43,7 @@ fun SettingsScreen(
                 .padding(vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            CryptoFolioCard {
+            AppCard {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(
                         text = "Base Currency",
@@ -71,7 +71,7 @@ fun SettingsScreen(
                 }
             }
 
-            CryptoFolioCard {
+            AppCard {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()

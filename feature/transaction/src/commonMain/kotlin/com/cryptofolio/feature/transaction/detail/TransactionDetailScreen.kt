@@ -20,8 +20,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.cryptofolio.core.designsystem.component.CryptoFolioButton
-import com.cryptofolio.core.designsystem.component.CryptoFolioCard
+import com.cryptofolio.core.designsystem.component.AppButton
+import com.cryptofolio.core.designsystem.component.AppCard
 import com.cryptofolio.core.designsystem.component.ErrorView
 import com.cryptofolio.core.designsystem.component.LoadingIndicator
 import com.cryptofolio.core.designsystem.icon.CryptoFolioIcons
@@ -69,7 +69,7 @@ fun TransactionDetailScreen(
                         .padding(16.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
-                    CryptoFolioCard {
+                    AppCard {
                         Column(modifier = Modifier.padding(16.dp)) {
                             Text(
                                 text = "${tx.coinName} (${tx.coinSymbol})",
@@ -87,7 +87,7 @@ fun TransactionDetailScreen(
                         }
                     }
 
-                    CryptoFolioButton(
+                    AppButton(
                         text = "Delete Transaction",
                         onClick = { viewModel.onAction(TransactionDetailAction.Delete) },
                     )
