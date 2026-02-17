@@ -37,6 +37,7 @@ class KMPLibraryConventionPlugin : Plugin<Project> {
             sourceSets.commonTest.dependencies {
                 implementation(libs.library("kotlin-test"))
                 implementation(libs.library("kotlinx-coroutines-test"))
+                implementation(libs.library("turbine"))
             }
         }
 

@@ -1,14 +1,10 @@
 package com.cryptofolio.feature.transaction.usecase
 
-import com.cryptofolio.domain.model.Currency
-import com.cryptofolio.domain.model.Exchange
 import com.cryptofolio.domain.model.Transaction
-import com.cryptofolio.domain.model.TransactionType
 import com.cryptofolio.domain.repository.TransactionRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import kotlinx.datetime.Clock
 import kotlin.test.Test
 import kotlin.test.assertTrue
 
@@ -16,59 +12,67 @@ class AddTransactionUseCaseTest {
 
     private val fakeRepository = FakeTransactionRepository()
     private val useCase = AddTransactionUseCase(fakeRepository)
-    private val now = Clock.System.now()
 
     @Test
-    fun `successfully adds valid transaction`() = runTest {
-        val transaction = createTransaction(amount = 1.0, pricePerUnit = 50000.0)
+    fun `given valid transaction - when invoke - then return Success`() = runTest {
+        // Given
+        val transaction = Transaction.mock()
+
+        // When
         val result = useCase(transaction)
+
+        // Then
         assertTrue(result.isSuccess)
         assertTrue(fakeRepository.insertedTransactions.isNotEmpty())
     }
 
     @Test
-    fun `fails when amount is zero`() = runTest {
-        val transaction = createTransaction(amount = 0.0, pricePerUnit = 50000.0)
+    fun `given zero amount - when invoke - then return Failure`() = runTest {
+        // Given
+        val transaction = Transaction.mock(amount = 0.0)
+
+        // When
         val result = useCase(transaction)
+
+        // Then
         assertTrue(result.isFailure)
     }
 
     @Test
-    fun `fails when amount is negative`() = runTest {
-        val transaction = createTransaction(amount = -1.0, pricePerUnit = 50000.0)
+    fun `given negative amount - when invoke - then return Failure`() = runTest {
+        // Given
+        val transaction = Transaction.mock(amount = -1.0)
+
+        // When
         val result = useCase(transaction)
+
+        // Then
         assertTrue(result.isFailure)
     }
 
     @Test
-    fun `fails when price is zero`() = runTest {
-        val transaction = createTransaction(amount = 1.0, pricePerUnit = 0.0)
+    fun `given zero price - when invoke - then return Failure`() = runTest {
+        // Given
+        val transaction = Transaction.mock(pricePerUnit = 0.0)
+
+        // When
         val result = useCase(transaction)
+
+        // Then
         assertTrue(result.isFailure)
     }
 
     @Test
-    fun `fails when coinId is blank`() = runTest {
-        val transaction = createTransaction(amount = 1.0, pricePerUnit = 50000.0, coinId = "")
+    fun `given blank coinId - when invoke - then return Failure`() = runTest {
+        // Given
+        val transaction = Transaction.mock(coinId = "")
+
+        // When
         val result = useCase(transaction)
+
+        // Then
         assertTrue(result.isFailure)
     }
-
-    private fun createTransaction(
-        amount: Double,
-        pricePerUnit: Double,
-        coinId: String = "bitcoin",
-    ) = Transaction(
-        coinId = coinId,
-        coinName = "Bitcoin",
-        coinSymbol = "BTC",
-        type = TransactionType.BUY,
-        amount = amount,
-        pricePerUnit = pricePerUnit,
-        exchange = Exchange.BINANCE,
-        currency = Currency.USD,
-        date = now,
-    )
 }
 
 private class FakeTransactionRepository : TransactionRepository {

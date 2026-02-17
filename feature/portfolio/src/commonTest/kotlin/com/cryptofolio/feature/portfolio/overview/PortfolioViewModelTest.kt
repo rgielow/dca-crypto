@@ -1,5 +1,6 @@
 package com.cryptofolio.feature.portfolio.overview
 
+import app.cash.turbine.test
 import com.cryptofolio.domain.model.Asset
 import com.cryptofolio.domain.model.Currency
 import com.cryptofolio.domain.model.Portfolio
@@ -19,29 +20,11 @@ import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFalse
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class PortfolioViewModelTest {
 
     private val testDispatcher = StandardTestDispatcher()
-
-    private val testAssets = listOf(
-        Asset(
-            coinId = "bitcoin",
-            coinName = "Bitcoin",
-            coinSymbol = "BTC",
-            totalAmount = 1.0,
-            averageBuyPrice = 50000.0,
-            totalInvested = 50000.0,
-            currentPrice = 60000.0,
-            currentValue = 60000.0,
-            profitLoss = 10000.0,
-            profitLossPercentage = 20.0,
-        ),
-    )
-
-    private val testPortfolio = Portfolio(assets = testAssets)
 
     @BeforeTest
     fun setUp() {
@@ -54,23 +37,96 @@ class PortfolioViewModelTest {
     }
 
     @Test
-    fun `loads portfolio on init`() = runTest(testDispatcher) {
-        val repository = object : PortfolioRepository {
-            override fun getPortfolio(currency: Currency): Flow<Portfolio> = flowOf(testPortfolio)
-            override suspend fun refreshPrices(currency: Currency): Result<Unit> = Result.success(Unit)
+    fun `given repository has portfolio - when initialized - then state updated with portfolio`() =
+        runTest(testDispatcher) {
+            // Given
+            val testPortfolio = Portfolio.mock()
+            val repository = FakePortfolioRepository(portfolio = testPortfolio)
+
+            // When
+            val viewModel = PortfolioViewModel(
+                getPortfolio = GetPortfolioUseCase(repository),
+                refreshPrices = RefreshPricesUseCase(repository),
+            )
+            advanceUntilIdle()
+
+            // Then
+            val expected = PortfolioUiState(
+                portfolio = testPortfolio,
+                isLoading = false,
+                isRefreshing = false,
+                error = null,
+            )
+            assertEquals(expected, viewModel.state.value)
         }
 
-        val viewModel = PortfolioViewModel(
-            getPortfolio = GetPortfolioUseCase(repository),
-            refreshPrices = RefreshPricesUseCase(repository),
-        )
+    @Test
+    fun `given empty portfolio - when initialized - then state has empty assets`() =
+        runTest(testDispatcher) {
+            // Given
+            val emptyPortfolio = Portfolio.mock(assets = emptyList())
+            val repository = FakePortfolioRepository(portfolio = emptyPortfolio)
 
-        advanceUntilIdle()
+            // When
+            val viewModel = PortfolioViewModel(
+                getPortfolio = GetPortfolioUseCase(repository),
+                refreshPrices = RefreshPricesUseCase(repository),
+            )
+            advanceUntilIdle()
 
-        val state = viewModel.state.value
-        assertFalse(state.isLoading)
-        assertEquals(1, state.portfolio.assets.size)
-        assertEquals("bitcoin", state.portfolio.assets.first().coinId)
-        assertEquals(60000.0, state.portfolio.totalCurrentValue)
-    }
+            // Then
+            val expected = PortfolioUiState(
+                portfolio = emptyPortfolio,
+                isLoading = false,
+                isRefreshing = false,
+                error = null,
+            )
+            assertEquals(expected, viewModel.state.value)
+        }
+
+    @Test
+    fun `given SelectAsset action - when onAction - then send NavigateToAssetDetail event`() =
+        runTest(testDispatcher) {
+            // Given
+            val repository = FakePortfolioRepository()
+            val viewModel = PortfolioViewModel(
+                getPortfolio = GetPortfolioUseCase(repository),
+                refreshPrices = RefreshPricesUseCase(repository),
+            )
+            advanceUntilIdle()
+
+            // When / Then
+            viewModel.events.test {
+                viewModel.onAction(PortfolioAction.SelectAsset("bitcoin"))
+                assertEquals(PortfolioEvent.NavigateToAssetDetail("bitcoin"), awaitItem())
+            }
+        }
+
+    @Test
+    fun `given refresh fails - when RefreshPrices action - then send ShowError event`() =
+        runTest(testDispatcher) {
+            // Given
+            val repository = FakePortfolioRepository(
+                refreshResult = Result.failure(Exception("Network error")),
+            )
+
+            // When / Then
+            // init already calls RefreshPrices, so we collect events from the start
+            val viewModel = PortfolioViewModel(
+                getPortfolio = GetPortfolioUseCase(repository),
+                refreshPrices = RefreshPricesUseCase(repository),
+            )
+            viewModel.events.test {
+                advanceUntilIdle()
+                assertEquals(PortfolioEvent.ShowError("Network error"), awaitItem())
+            }
+        }
+}
+
+private class FakePortfolioRepository(
+    private val portfolio: Portfolio = Portfolio.mock(),
+    private val refreshResult: Result<Unit> = Result.success(Unit),
+) : PortfolioRepository {
+    override fun getPortfolio(currency: Currency): Flow<Portfolio> = flowOf(portfolio)
+    override suspend fun refreshPrices(currency: Currency): Result<Unit> = refreshResult
 }

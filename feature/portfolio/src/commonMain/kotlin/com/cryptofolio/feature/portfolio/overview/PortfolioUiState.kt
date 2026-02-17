@@ -8,14 +8,3 @@ data class PortfolioUiState(
     val isRefreshing: Boolean = false,
     val error: String? = null,
 )
-
-sealed interface PortfolioAction {
-    data object LoadPortfolio : PortfolioAction
-    data object RefreshPrices : PortfolioAction
-    data class SelectAsset(val coinId: String) : PortfolioAction
-}
-
-sealed interface PortfolioEvent {
-    data class NavigateToAssetDetail(val coinId: String) : PortfolioEvent
-    data class ShowError(val message: String) : PortfolioEvent
-}

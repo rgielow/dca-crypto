@@ -19,6 +19,10 @@ class KMPFeatureConventionPlugin : Plugin<Project> {
                 implementation(libs.library("androidx-lifecycle-runtime-compose"))
                 implementation(libs.library("kotlinx-serialization-json"))
             }
+
+            sourceSets.commonTest.dependencies {
+                implementation(libs.library("androidx-lifecycle-viewmodel-core"))
+            }
         }
     }
 }

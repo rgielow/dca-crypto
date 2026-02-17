@@ -1,81 +1,86 @@
 package com.cryptofolio.feature.portfolio.usecase
 
-import com.cryptofolio.domain.model.Currency
-import com.cryptofolio.domain.model.Exchange
 import com.cryptofolio.domain.model.Transaction
 import com.cryptofolio.domain.model.TransactionType
-import kotlinx.datetime.Clock
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class CalculateWeightedAverageUseCaseTest {
 
     private val useCase = CalculateWeightedAverageUseCase()
-    private val now = Clock.System.now()
 
     @Test
-    fun `returns zero for empty list`() {
-        val result = useCase(emptyList())
+    fun `given empty transaction list - when invoke - then return zero`() {
+        // Given
+        val transactions = emptyList<Transaction>()
+
+        // When
+        val result = useCase(transactions)
+
+        // Then
         assertEquals(0.0, result)
     }
 
     @Test
-    fun `calculates average for single buy`() {
+    fun `given single buy transaction - when invoke - then return that price`() {
+        // Given
         val transactions = listOf(
-            createTransaction(amount = 1.0, pricePerUnit = 50000.0),
+            Transaction.mock(amount = 1.0, pricePerUnit = 50000.0),
         )
+
+        // When
         val result = useCase(transactions)
+
+        // Then
         assertEquals(50000.0, result)
     }
 
     @Test
-    fun `calculates weighted average for multiple buys`() {
+    fun `given multiple buy transactions - when invoke - then return weighted average`() {
+        // Given
         val transactions = listOf(
-            createTransaction(amount = 1.0, pricePerUnit = 40000.0),
-            createTransaction(amount = 2.0, pricePerUnit = 50000.0),
+            Transaction.mock(id = 1, amount = 1.0, pricePerUnit = 40000.0, totalCost = 40000.0),
+            Transaction.mock(id = 2, amount = 2.0, pricePerUnit = 50000.0, totalCost = 100000.0),
         )
+
+        // When
         val result = useCase(transactions)
+
+        // Then
         val expected = (40000.0 + 100000.0) / 3.0
         assertEquals(expected, result, 0.01)
     }
 
     @Test
-    fun `ignores sell transactions`() {
+    fun `given mix of buy and sell transactions - when invoke - then ignore sell transactions`() {
+        // Given
         val transactions = listOf(
-            createTransaction(amount = 2.0, pricePerUnit = 40000.0),
-            createTransaction(amount = 0.5, pricePerUnit = 60000.0, type = TransactionType.SELL),
+            Transaction.mock(id = 1, amount = 2.0, pricePerUnit = 40000.0, totalCost = 80000.0),
+            Transaction.mock(id = 2, amount = 0.5, pricePerUnit = 60000.0, type = TransactionType.SELL),
         )
+
+        // When
         val result = useCase(transactions)
+
+        // Then
         assertEquals(40000.0, result)
     }
 
     @Test
-    fun `handles multiple buys at different prices`() {
+    fun `given multiple buys at different prices - when invoke - then return correct weighted average`() {
+        // Given
         val transactions = listOf(
-            createTransaction(amount = 0.5, pricePerUnit = 30000.0),
-            createTransaction(amount = 0.3, pricePerUnit = 35000.0),
-            createTransaction(amount = 0.2, pricePerUnit = 40000.0),
+            Transaction.mock(id = 1, amount = 0.5, pricePerUnit = 30000.0, totalCost = 15000.0),
+            Transaction.mock(id = 2, amount = 0.3, pricePerUnit = 35000.0, totalCost = 10500.0),
+            Transaction.mock(id = 3, amount = 0.2, pricePerUnit = 40000.0, totalCost = 8000.0),
         )
+
+        // When
         val result = useCase(transactions)
-        val totalCost = (0.5 * 30000.0) + (0.3 * 35000.0) + (0.2 * 40000.0)
+
+        // Then
+        val totalCost = 15000.0 + 10500.0 + 8000.0
         val totalAmount = 1.0
         assertEquals(totalCost / totalAmount, result, 0.01)
     }
-
-    private fun createTransaction(
-        amount: Double,
-        pricePerUnit: Double,
-        type: TransactionType = TransactionType.BUY,
-    ) = Transaction(
-        coinId = "bitcoin",
-        coinName = "Bitcoin",
-        coinSymbol = "BTC",
-        type = type,
-        amount = amount,
-        pricePerUnit = pricePerUnit,
-        totalCost = amount * pricePerUnit,
-        exchange = Exchange.BINANCE,
-        currency = Currency.USD,
-        date = now,
-    )
 }

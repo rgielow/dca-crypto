@@ -1,11 +1,11 @@
 package com.cryptofolio.feature.portfolio.usecase
 
+import app.cash.turbine.test
 import com.cryptofolio.domain.model.Asset
 import com.cryptofolio.domain.model.Currency
 import com.cryptofolio.domain.model.Portfolio
 import com.cryptofolio.domain.repository.PortfolioRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
@@ -14,13 +14,11 @@ import kotlin.test.assertEquals
 class GetPortfolioUseCaseTest {
 
     @Test
-    fun `returns portfolio from repository`() = runTest {
-        val expected = Portfolio(
+    fun `given repository has portfolio - when invoke - then emit portfolio`() = runTest {
+        // Given
+        val expected = Portfolio.mock(
             assets = listOf(
-                Asset(
-                    coinId = "bitcoin",
-                    coinName = "Bitcoin",
-                    coinSymbol = "BTC",
+                Asset.mock(
                     totalAmount = 1.5,
                     averageBuyPrice = 45000.0,
                     totalInvested = 67500.0,
@@ -31,31 +29,33 @@ class GetPortfolioUseCaseTest {
                 ),
             ),
         )
-
         val repository = object : PortfolioRepository {
             override fun getPortfolio(currency: Currency): Flow<Portfolio> = flowOf(expected)
             override suspend fun refreshPrices(currency: Currency): Result<Unit> = Result.success(Unit)
         }
-
         val useCase = GetPortfolioUseCase(repository)
-        val result = useCase(Currency.USD).first()
 
-        assertEquals(1, result.assets.size)
-        assertEquals("bitcoin", result.assets.first().coinId)
-        assertEquals(82500.0, result.totalCurrentValue)
+        // When / Then
+        useCase(Currency.USD).test {
+            assertEquals(expected, awaitItem())
+            awaitComplete()
+        }
     }
 
     @Test
-    fun `returns empty portfolio when no assets`() = runTest {
+    fun `given repository has no assets - when invoke - then emit empty portfolio`() = runTest {
+        // Given
+        val emptyPortfolio = Portfolio.mock(assets = emptyList())
         val repository = object : PortfolioRepository {
-            override fun getPortfolio(currency: Currency): Flow<Portfolio> = flowOf(Portfolio())
+            override fun getPortfolio(currency: Currency): Flow<Portfolio> = flowOf(emptyPortfolio)
             override suspend fun refreshPrices(currency: Currency): Result<Unit> = Result.success(Unit)
         }
-
         val useCase = GetPortfolioUseCase(repository)
-        val result = useCase(Currency.USD).first()
 
-        assertEquals(0, result.assets.size)
-        assertEquals(0.0, result.totalCurrentValue)
+        // When / Then
+        useCase(Currency.USD).test {
+            assertEquals(emptyPortfolio, awaitItem())
+            awaitComplete()
+        }
     }
 }

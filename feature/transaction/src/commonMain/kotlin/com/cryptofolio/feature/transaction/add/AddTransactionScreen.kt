@@ -24,7 +24,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.cryptofolio.core.designsystem.component.AppButton
-import com.cryptofolio.core.designsystem.component.CryptoFolioTextField
+import com.cryptofolio.core.designsystem.component.AppTextField
 import com.cryptofolio.core.designsystem.icon.CryptoFolioIcons
 import com.cryptofolio.core.ui.CollectAsEffect
 import com.cryptofolio.domain.model.Currency
@@ -79,7 +79,7 @@ fun AddTransactionScreen(
                 }
             }
 
-            CryptoFolioTextField(
+            AppTextField(
                 value = state.coinName,
                 onValueChange = {
                     viewModel.onAction(AddTransactionAction.UpdateCoinName(it))
@@ -90,13 +90,13 @@ fun AddTransactionScreen(
                 errorMessage = state.coinError,
             )
 
-            CryptoFolioTextField(
+            AppTextField(
                 value = state.coinSymbol,
                 onValueChange = { viewModel.onAction(AddTransactionAction.UpdateCoinSymbol(it)) },
                 label = "Symbol (e.g. BTC)",
             )
 
-            CryptoFolioTextField(
+            AppTextField(
                 value = state.amount,
                 onValueChange = { viewModel.onAction(AddTransactionAction.UpdateAmount(it)) },
                 label = "Amount",
@@ -105,7 +105,7 @@ fun AddTransactionScreen(
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
             )
 
-            CryptoFolioTextField(
+            AppTextField(
                 value = state.pricePerUnit,
                 onValueChange = { viewModel.onAction(AddTransactionAction.UpdatePrice(it)) },
                 label = "Price per Unit",
@@ -114,7 +114,7 @@ fun AddTransactionScreen(
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
             )
 
-            CryptoFolioTextField(
+            AppTextField(
                 value = state.fee,
                 onValueChange = { viewModel.onAction(AddTransactionAction.UpdateFee(it)) },
                 label = "Fee (optional)",
@@ -136,7 +136,7 @@ fun AddTransactionScreen(
                 }
             }
 
-            CryptoFolioTextField(
+            AppTextField(
                 value = state.notes,
                 onValueChange = { viewModel.onAction(AddTransactionAction.UpdateNotes(it)) },
                 label = "Notes (optional)",
