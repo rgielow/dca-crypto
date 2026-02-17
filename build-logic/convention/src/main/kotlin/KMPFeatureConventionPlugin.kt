@@ -22,6 +22,7 @@ class KMPFeatureConventionPlugin : Plugin<Project> {
 
             sourceSets.commonTest.dependencies {
                 implementation(libs.library("androidx-lifecycle-viewmodel-core"))
+                implementation(project(":core:testing"))
             }
         }
     }

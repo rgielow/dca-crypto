@@ -1,49 +1,27 @@
 package com.cryptofolio.feature.transaction.list
 
 import app.cash.turbine.test
+import com.cryptofolio.core.testing.runViewModelTest
 import com.cryptofolio.domain.model.Transaction
 import com.cryptofolio.domain.repository.TransactionRepository
 import com.cryptofolio.feature.transaction.usecase.DeleteTransactionUseCase
 import com.cryptofolio.feature.transaction.usecase.GetTransactionsUseCase
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.test.StandardTestDispatcher
-import kotlinx.coroutines.test.advanceUntilIdle
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.test.setMain
-import kotlin.test.AfterTest
-import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class TransactionListViewModelTest {
-
-    private val testDispatcher = StandardTestDispatcher()
-
-    @BeforeTest
-    fun setUp() {
-        Dispatchers.setMain(testDispatcher)
-    }
-
-    @AfterTest
-    fun tearDown() {
-        Dispatchers.resetMain()
-    }
 
     @Test
     fun `given repository has transactions - when initialized - then state updated with transactions`() =
-        runTest(testDispatcher) {
+        runViewModelTest {
             // Given
             val testTransactions = listOf(Transaction.mock())
             val repository = FakeTransactionRepository(transactions = testTransactions)
 
             // When
             val viewModel = createViewModel(repository)
-            advanceUntilIdle()
 
             // Then
             val expected = TransactionListUiState(
@@ -56,13 +34,12 @@ class TransactionListViewModelTest {
 
     @Test
     fun `given empty repository - when initialized - then state has empty list`() =
-        runTest(testDispatcher) {
+        runViewModelTest {
             // Given
             val repository = FakeTransactionRepository(transactions = emptyList())
 
             // When
             val viewModel = createViewModel(repository)
-            advanceUntilIdle()
 
             // Then
             val expected = TransactionListUiState(
@@ -75,11 +52,10 @@ class TransactionListViewModelTest {
 
     @Test
     fun `given AddTransaction action - when onAction - then send NavigateToAddTransaction event`() =
-        runTest(testDispatcher) {
+        runViewModelTest {
             // Given
             val repository = FakeTransactionRepository()
             val viewModel = createViewModel(repository)
-            advanceUntilIdle()
 
             // When / Then
             viewModel.events.test {
@@ -90,11 +66,10 @@ class TransactionListViewModelTest {
 
     @Test
     fun `given SelectTransaction action - when onAction - then send NavigateToTransactionDetail event`() =
-        runTest(testDispatcher) {
+        runViewModelTest {
             // Given
             val repository = FakeTransactionRepository()
             val viewModel = createViewModel(repository)
-            advanceUntilIdle()
 
             // When / Then
             viewModel.events.test {
@@ -105,16 +80,14 @@ class TransactionListViewModelTest {
 
     @Test
     fun `given successful delete - when DeleteTransaction action - then send TransactionDeleted event`() =
-        runTest(testDispatcher) {
+        runViewModelTest {
             // Given
             val repository = FakeTransactionRepository()
             val viewModel = createViewModel(repository)
-            advanceUntilIdle()
 
             // When / Then
             viewModel.events.test {
                 viewModel.onAction(TransactionListAction.DeleteTransaction(1))
-                advanceUntilIdle()
                 assertEquals(TransactionListEvent.TransactionDeleted, awaitItem())
             }
         }

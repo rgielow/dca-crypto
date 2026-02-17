@@ -1,40 +1,18 @@
 package com.cryptofolio.feature.settings
 
 import app.cash.turbine.test
+import com.cryptofolio.core.testing.runViewModelTest
 import com.cryptofolio.domain.model.Currency
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.StandardTestDispatcher
-import kotlinx.coroutines.test.advanceUntilIdle
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.test.setMain
-import kotlin.test.AfterTest
-import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class SettingsViewModelTest {
-
-    private val testDispatcher = StandardTestDispatcher()
-
-    @BeforeTest
-    fun setUp() {
-        Dispatchers.setMain(testDispatcher)
-    }
-
-    @AfterTest
-    fun tearDown() {
-        Dispatchers.resetMain()
-    }
 
     @Test
     fun `given initial state - when created - then state has default values`() =
-        runTest(testDispatcher) {
+        runViewModelTest {
             // Given / When
             val viewModel = SettingsViewModel()
-            advanceUntilIdle()
 
             // Then
             val expected = SettingsUiState(
@@ -46,15 +24,13 @@ class SettingsViewModelTest {
 
     @Test
     fun `given UpdateCurrency action - when onAction - then state updated and event sent`() =
-        runTest(testDispatcher) {
+        runViewModelTest {
             // Given
             val viewModel = SettingsViewModel()
-            advanceUntilIdle()
 
             // When
             viewModel.events.test {
                 viewModel.onAction(SettingsAction.UpdateCurrency(Currency.BRL))
-                advanceUntilIdle()
 
                 // Then
                 assertEquals(Currency.BRL, viewModel.state.value.selectedCurrency)
@@ -64,14 +40,12 @@ class SettingsViewModelTest {
 
     @Test
     fun `given UpdateTheme action with true - when onAction - then isDarkTheme is true`() =
-        runTest(testDispatcher) {
+        runViewModelTest {
             // Given
             val viewModel = SettingsViewModel()
-            advanceUntilIdle()
 
             // When
             viewModel.onAction(SettingsAction.UpdateTheme(true))
-            advanceUntilIdle()
 
             // Then
             val expected = SettingsUiState(
@@ -83,15 +57,13 @@ class SettingsViewModelTest {
 
     @Test
     fun `given UpdateTheme action with false - when onAction - then isDarkTheme is false`() =
-        runTest(testDispatcher) {
+        runViewModelTest {
             // Given
             val viewModel = SettingsViewModel()
             viewModel.onAction(SettingsAction.UpdateTheme(true))
-            advanceUntilIdle()
 
             // When
             viewModel.onAction(SettingsAction.UpdateTheme(false))
-            advanceUntilIdle()
 
             // Then
             val expected = SettingsUiState(
